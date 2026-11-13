@@ -25,8 +25,15 @@ export class Cliente {
     })
     estado!: string;
 
-    @Column({ type: "decimal", precision: 12, scale: 2, default: 0 })
+    
+    @Column({
+        name: "limite_credito",
+        type: "decimal",
+        precision: 12,
+        scale: 2
+    })
     limiteCredito!: number;
+
 
     @OneToMany(() => Direccion, (direccion) => direccion.cliente)
     direcciones!: Direccion[];
