@@ -3,6 +3,7 @@ USE logiexpress_db;
 
 DELIMITER $$
 
+--Procedure SQL 1: Reporte Mensual de Cliente
 CREATE PROCEDURE sp_reporte_mensual_cliente(
     IN p_cliente_id INT,
     IN p_mes INT,
@@ -35,6 +36,7 @@ BEGIN
       AND YEAR(e.fecha) = p_anio;
 END $$
 
+--Procedure SQL 2: Hoja de Ruta e Historial
 CREATE PROCEDURE sp_obtener_hoja_ruta_envio(
     IN p_envio_id INT
 )
