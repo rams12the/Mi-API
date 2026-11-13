@@ -10,21 +10,34 @@ const envioRepository = AppDataSource.getRepository(Envio);
 export const getAllEnvios = async (req: Request, res: Response) => {
     try {
         const envios = await envioRepository.find({
-            relations: {
-                remitente: true,
-                destinatario: true,
-                paquetes: true
-            }
-        });
+    where: [
+        { estado: "REGISTRADO" },
+        { estado: "EN_TRANSITO" }
+    ],
+    relations: {
+        remitente: true,
+        destinatario: true,
+        paquetes: true
+    }
+});
 
         return res.json(envios);
-    } catch (error) {
-        console.error("Error al obtener envios:", error);
+    } catch (error: any) {
+    console.error("Error al crear envio:", error);
 
-        return res.status(500).json({
-            mensaje: "Error al obtener los envios"
+    if (
+        error.driverError?.sqlState === "45000" ||
+        error.driverError?.errno === 1644
+    ) {
+        return res.status(400).json({
+            mensaje: "El almacen ha alcanzado su capacidad maxima"
         });
     }
+
+    return res.status(500).json({
+        mensaje: "No se pudo registrar el envio"
+    });
+}
 };
 
 //crear el metodo para crear envios

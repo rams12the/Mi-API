@@ -53,11 +53,20 @@ export const createPaqueteAlmacen = async (req: Request, res: Response) => {
             paquete: paqueteGuardado
         });
 
-    } catch (error) {
-        console.error("Error al registrar paquete:", error);
+    } catch (error: any) {
+    console.error("Error al registrar paquete:", error);
 
-        return res.status(500).json({
-            mensaje: "No se pudo registrar el paquete"
+    if (
+        error.driverError?.sqlState === "45000" ||
+        error.driverError?.errno === 1644
+    ) {
+        return res.status(400).json({
+            mensaje: "El almacen ha alcanzado su capacidad maxima"
         });
     }
+
+    return res.status(500).json({
+        mensaje: "No se pudo registrar el paquete"
+    });
+}
 };
